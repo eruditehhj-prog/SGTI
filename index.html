@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGTI 傻狗测试</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">🐶 SGTI 傻狗测试</h1>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active">首页</a></li>
+                <li><a href="#test" class="nav-link">开始测试</a></li>
+                <li><a href="#history" class="nav-link">历史记录</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 首页 -->
+    <section id="home" class="section active">
+        <div class="container">
+            <div class="hero">
+                <h2>欢迎来到 SGTI 傻狗测试</h2>
+                <p>通过30道有趣的问题，了解你在社交中的真实状态</p>
+                <button class="btn start-btn">开始测试</button>
+                <div class="dog-types">
+                    <h3>24种狗种等你来测</h3>
+                    <div class="dog-grid">
+                        <div class="dog-item">舔狗</div>
+                        <div class="dog-item">潜水狗</div>
+                        <div class="dog-item">杠狗</div>
+                        <div class="dog-item">冷场狗</div>
+                        <div class="dog-item">酒狗</div>
+                        <div class="dog-item">吗喽狗</div>
+                        <div class="dog-item">死狗</div>
+                        <div class="dog-item">哈巴狗</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 测试页 -->
+    <section id="test" class="section">
+        <div class="container">
+            <div class="test-container">
+                <div class="progress-bar">
+                    <div class="progress" style="width: 0%"></div>
+                </div>
+                <div class="question-container">
+                    <h3 class="question-number">问题 1/30</h3>
+                    <h2 class="question-text">朋友给你发消息，你看到了但不秒回，主要是因为？</h2>
+                    <div class="options">
+                        <div class="option" data-value="A">A. 在忙，晚点认真回</div>
+                        <div class="option" data-value="B">B. 用意念回了，然后忘了</div>
+                        <div class="option" data-value="C">C. 单纯不想回，等对方发第二个我再动</div>
+                        <div class="option" data-value="D">D. 我秒回，我是舔狗</div>
+                    </div>
+                </div>
+                <div class="test-controls">
+                    <button class="btn prev-btn" disabled>上一题</button>
+                    <button class="btn next-btn">下一题</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 结果页 -->
+    <section id="result" class="section">
+        <div class="container">
+            <div class="result-container">
+                <h2>🐶 鉴定结果</h2>
+                <h3 class="result-title">你是舔狗</h3>
+                <div class="result-content">
+                    <p class="result-description">你的回消息速度比110出警还快。对方发一个“嗯”，你能接三行；对方发一个“哦”，你立刻换话题。你最大的恐惧不是孤独终老，而是“我是不是回得太快了显得我很闲”。你的聊天记录里，绿色气泡占比超过90%，蓝色那10%还是对方发的“嗯”“哦”“好”。</p>
+                    <p class="result-snark">💀 <strong>毒舌一句</strong>：你舔的人也在舔别人</p>
+                    <p class="result-advice">⚠️ <strong>忠告</strong>：有时候不回复，也是一种回复。建议把手机扔水里冷静三天。</p>
+                    <p class="result-caption">📱 <strong>晒图配文</strong>：测出来是舔狗，谁在监视我？</p>
+                </div>
+                <div class="result-actions">
+                    <button class="btn retake-btn">重新测试</button>
+                    <button class="btn share-btn">分享结果</button>
+                    <button class="btn history-btn">查看历史</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 历史记录页 -->
+    <section id="history" class="section">
+        <div class="container">
+            <h2>测试历史</h2>
+            <div class="history-container">
+                <div class="history-empty">
+                    <p>暂无测试历史</p>
+                    <button class="btn start-btn">开始测试</button>
+                </div>
+                <div class="history-list">
+                    <!-- 历史记录项将通过JavaScript动态添加 -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
