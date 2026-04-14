@@ -337,6 +337,37 @@ body {
     text-align: center;
 }
 
+/* 二维码样式 */
+.result-qrcode {
+    margin-top: 30px;
+    text-align: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 15px;
+    border: 2px dashed #ff6b6b;
+}
+
+.result-qrcode h3 {
+    color: #ff6b6b;
+    margin-bottom: 15px;
+    font-family: 'Comic Sans MS', 'Arial', sans-serif;
+}
+
+#qrcode-container {
+    margin: 0 auto 15px;
+    display: inline-block;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result-qrcode p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
 .dimension-item {
     margin-bottom: 25px;
 }

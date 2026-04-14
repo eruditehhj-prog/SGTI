@@ -1005,7 +1005,35 @@ function showResult() {
             </div>
         `;
 
-        // 显示结果页
+        // 生成二维码
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        if (qrcodeContainer && typeof QRCode !== 'undefined') {
+            qrcodeContainer.innerHTML = '';
+            const url = window.location.origin + window.location.pathname;
+            
+            // 创建canvas元素
+            const canvas = document.createElement('canvas');
+            QRCode.toCanvas(canvas, url, {
+                width: 150,
+                margin: 1,
+                color: {
+                    dark: '#000000',
+                    light: '#ffffff'
+                }
+            }, function (error) {
+                if (error) {
+                    console.error('二维码生成错误:', error);
+                    // 如果生成失败，显示错误信息
+                    qrcodeContainer.innerHTML = '<p style="color: red;">二维码生成失败</p>';
+                } else {
+                    // 成功生成，添加到容器
+                    qrcodeContainer.appendChild(canvas);
+                }
+            });
+        } else if (qrcodeContainer) {
+            qrcodeContainer.innerHTML = '<p style="color: red;">二维码库未加载</p>';
+        }
+
         showSection('result');
     }, 3000);
 }
@@ -1182,6 +1210,35 @@ function showHistoryDetail(recordId) {
             `;
         } else {
             dimensionsContainer.innerHTML = '<h3>五维对抗分析</h3><p>暂无维度数据</p>';
+        }
+        
+        // 生成二维码
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        if (qrcodeContainer && typeof QRCode !== 'undefined') {
+            qrcodeContainer.innerHTML = '';
+            const url = window.location.origin + window.location.pathname;
+            
+            // 创建canvas元素
+            const canvas = document.createElement('canvas');
+            QRCode.toCanvas(canvas, url, {
+                width: 150,
+                margin: 1,
+                color: {
+                    dark: '#000000',
+                    light: '#ffffff'
+                }
+            }, function (error) {
+                if (error) {
+                    console.error('二维码生成错误:', error);
+                    // 如果生成失败，显示错误信息
+                    qrcodeContainer.innerHTML = '<p style="color: red;">二维码生成失败</p>';
+                } else {
+                    // 成功生成，添加到容器
+                    qrcodeContainer.appendChild(canvas);
+                }
+            });
+        } else if (qrcodeContainer) {
+            qrcodeContainer.innerHTML = '<p style="color: red;">二维码库未加载</p>';
         }
         
         showSection('result');

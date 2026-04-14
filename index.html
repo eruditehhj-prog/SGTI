@@ -111,6 +111,11 @@
                 <div class="result-dimensions">
                     <!-- 五维对抗分析将通过JavaScript动态生成 -->
                 </div>
+                <div class="result-qrcode">
+                    <h3>扫码评测</h3>
+                    <div id="qrcode-container"></div>
+                    <p>扫描二维码开始你的社交狗生评测</p>
+                </div>
                 <div class="result-actions">
                     <button class="btn retake-btn">重新测试</button>
                     <button class="btn share-btn">分享结果</button>
@@ -136,6 +141,8 @@
         </div>
     </section>
 
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
