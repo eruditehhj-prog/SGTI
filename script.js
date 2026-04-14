@@ -476,184 +476,184 @@ const dogTypes = {
 // 评分规则
 const scoringRules = {
     1: {
-        A: [{id: 8, score: 0.1}, {id: 16, score: 0.1}, {id: 20, score: 0.1}],
-        B: [{id: 2, score: 0.5}, {id: 7, score: 0.5}],
-        C: [{id: 7, score: 0.5}, {id: 19, score: 0.5}],
-        D: [{id: 1, score: 0.5}, {id: 8, score: 0.5}]
+        A: [{id: 8, score: 0.1}, {id: 16, score: 0.1}, {id: 20, score: 0.1}, {dimension: 'I', score: 0.5}, {dimension: 'J', score: 0.5}],
+        B: [{id: 2, score: 0.5}, {id: 7, score: 0.5}, {dimension: 'I', score: 0.5}, {dimension: 'P', score: 0.5}],
+        C: [{id: 7, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'P', score: 0.5}],
+        D: [{id: 1, score: 0.5}, {id: 8, score: 0.5}, {dimension: 'E', score: 0.5}, {dimension: 'S', score: 1}]
     },
     2: {
-        A: [{id: 10, score: 0.5}, {id: 24, score: 0.5}],
-        B: [{id: 2, score: 1}],
-        C: [{id: 9, score: 0.5}, {id: 12, score: 0.5}],
-        D: [{id: 1, score: 0.5}, {id: 8, score: 0.5}]
+        A: [{id: 10, score: 0.5}, {id: 24, score: 0.5}, {dimension: 'I', score: 0.5}, {dimension: 'A', score: 0.5}],
+        B: [{id: 2, score: 1}, {dimension: 'F', score: 0.5}, {dimension: 'J', score: 0.5}],
+        C: [{id: 9, score: 0.5}, {id: 12, score: 0.5}, {dimension: 'E', score: 0.5}, {dimension: 'N', score: 0.5}],
+        D: [{id: 1, score: 0.5}, {id: 8, score: 0.5}, {dimension: 'E', score: 0.5}, {dimension: 'S', score: 1}]
     },
     3: {
-        A: [{id: 20, score: 0.5}, {id: 21, score: 0.5}],
-        B: [{id: 15, score: 1}],
-        C: [{id: 6, score: 0.5}, {id: 23, score: 0.5}],
-        D: [{id: 5, score: 0.5}, {id: 17, score: 0.5}]
+        A: [{id: 20, score: 0.5}, {id: 21, score: 0.5}, {dimension: 'E', score: 1}],
+        B: [{id: 15, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'S', score: 0.5}],
+        C: [{id: 6, score: 0.5}, {id: 23, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'F', score: 0.5}],
+        D: [{id: 5, score: 0.5}, {id: 17, score: 0.5}, {dimension: 'P', score: 0.5}, {dimension: 'A', score: 0.5}]
     },
     4: {
-        A: [{id: 3, score: 1}],
-        B: [{id: 2, score: 1}],
-        C: [{id: 20, score: 1}],
-        D: [{id: 9, score: 0.5}, {id: 18, score: 0.5}]
+        A: [{id: 3, score: 1}, {dimension: 'T', score: 1}, {dimension: 'A', score: 0.5}],
+        B: [{id: 2, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 0.5}],
+        C: [{id: 20, score: 1}, {dimension: 'N', score: 0.5}, {dimension: 'P', score: 0.5}],
+        D: [{id: 9, score: 0.5}, {id: 18, score: 0.5}, {dimension: 'N', score: 0.5}, {dimension: 'S', score: 0.5}]
     },
     5: {
-        A: [{id: 21, score: 0.5}, {id: 20, score: 0.5}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 2, score: 0.5}, {id: 14, score: 0.5}],
-        D: [{id: 4, score: 1}]
+        A: [{id: 21, score: 0.5}, {id: 20, score: 0.5}, {dimension: 'E', score: 1}, {dimension: 'J', score: 0.5}],
+        B: [{id: 8, score: 1}, {dimension: 'S', score: 1}, {dimension: 'F', score: 0.5}],
+        C: [{id: 2, score: 0.5}, {id: 14, score: 0.5}, {dimension: 'I', score: 1}],
+        D: [{id: 4, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 1}]
     },
     6: {
-        A: [{id: 12, score: 1}],
-        B: [{id: 6, score: 1}],
-        C: [{id: 9, score: 1}],
-        D: [{id: 7, score: 1}]
+        A: [{id: 12, score: 1}, {dimension: 'J', score: 0.5}, {dimension: 'S2', score: 0.5}],
+        B: [{id: 6, score: 1}, {dimension: 'N', score: 0.5}, {dimension: 'P', score: 0.5}],
+        C: [{id: 9, score: 1}, {dimension: 'E', score: 0.5}, {dimension: 'N', score: 0.5}],
+        D: [{id: 7, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'T', score: 0.5}]
     },
     7: {
-        A: [{id: 1, score: 0.5}, {id: 21, score: 0.5}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 11, score: 1}],
-        D: [{id: 10, score: 1}]
+        A: [{id: 1, score: 0.5}, {id: 21, score: 0.5}, {dimension: 'E', score: 1}, {dimension: 'J', score: 0.5}],
+        B: [{id: 8, score: 1}, {dimension: 'S', score: 0.5}, {dimension: 'F', score: 0.5}],
+        C: [{id: 11, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'S', score: 0.5}],
+        D: [{id: 10, score: 1}, {dimension: 'I', score: 1}, {dimension: 'P', score: 1}]
     },
     8: {
-        A: [{id: 20, score: 1}],
-        B: [{id: 15, score: 1}],
-        C: [{id: 10, score: 0.5}, {id: 19, score: 0.5}],
-        D: [{id: 16, score: 1}]
+        A: [{id: 20, score: 1}, {dimension: 'E', score: 1}],
+        B: [{id: 15, score: 1}, {dimension: 'P', score: 1}, {dimension: 'S', score: 0.5}],
+        C: [{id: 10, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'A', score: 0.5}],
+        D: [{id: 16, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'J', score: 0.5}]
     },
     9: {
-        A: [{id: 21, score: 0.5}, {id: 1, score: 0.5}],
-        B: [{id: 16, score: 1}],
-        C: [{id: 2, score: 0.5}, {id: 14, score: 0.5}],
-        D: [{id: 10, score: 0.5}, {id: 19, score: 0.5}]
+        A: [{id: 21, score: 0.5}, {id: 1, score: 0.5}, {dimension: 'E', score: 1}, {dimension: 'A', score: 0.5}],
+        B: [{id: 16, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'J', score: 0.5}],
+        C: [{id: 2, score: 0.5}, {id: 14, score: 0.5}, {dimension: 'I', score: 1}],
+        D: [{id: 10, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'P', score: 1}]
     },
     10: {
-        A: [{id: 1, score: 0.5}, {id: 8, score: 0.5}],
-        B: [{id: 7, score: 0.5}, {id: 19, score: 0.5}],
-        C: [{id: 3, score: 1}],
-        D: [{id: 20, score: 1}]
+        A: [{id: 1, score: 0.5}, {id: 8, score: 0.5}, {dimension: 'E', score: 0.5}, {dimension: 'S', score: 1}],
+        B: [{id: 7, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 0.5}, {dimension: 'T', score: 0.5}],
+        C: [{id: 3, score: 1}, {dimension: 'T', score: 1}, {dimension: 'A', score: 0.5}],
+        D: [{id: 20, score: 1}, {dimension: 'N', score: 0.5}, {dimension: 'A', score: 1}]
     },
     11: {
-        A: [{id: 1, score: 0.5}, {id: 21, score: 0.5}],
-        B: [{id: 8, score: 0.5}, {id: 16, score: 0.5}],
-        C: [{id: 10, score: 1}],
-        D: [{id: 24, score: 0.5}, {id: 19, score: 0.5}]
+        A: [{id: 1, score: 0.5}, {id: 21, score: 0.5}, {dimension: 'E', score: 1}, {dimension: 'S', score: 0.5}],
+        B: [{id: 8, score: 0.5}, {id: 16, score: 0.5}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 0.5}],
+        C: [{id: 10, score: 1}, {dimension: 'I', score: 1}, {dimension: 'A', score: 0.5}],
+        D: [{id: 24, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'P', score: 1}]
     },
     12: {
-        A: [{id: 20, score: 1}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 10, score: 1}],
-        D: [{id: 14, score: 1}]
+        A: [{id: 20, score: 1}, {dimension: 'E', score: 0.5}, {dimension: 'N', score: 0.5}],
+        B: [{id: 8, score: 1}, {dimension: 'S', score: 0.5}, {dimension: 'S2', score: 0.5}],
+        C: [{id: 10, score: 1}, {dimension: 'I', score: 1}, {dimension: 'A', score: 1}],
+        D: [{id: 14, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 1}]
     },
     13: {
-        A: [{id: 1, score: 0.5}, {id: 22, score: 0.5}],
-        B: [{id: 9, score: 1}],
-        C: [{id: 20, score: 1}],
-        D: [{id: 2, score: 0.5}, {id: 14, score: 0.5}]
+        A: [{id: 1, score: 0.5}, {id: 22, score: 0.5}, {dimension: 'F', score: 1}, {dimension: 'S', score: 0.5}],
+        B: [{id: 9, score: 1}, {dimension: 'E', score: 0.5}, {dimension: 'N', score: 0.5}],
+        C: [{id: 20, score: 1}, {dimension: 'N', score: 0.5}, {dimension: 'P', score: 0.5}],
+        D: [{id: 2, score: 0.5}, {id: 14, score: 0.5}, {dimension: 'I', score: 1}]
     },
     14: {
-        A: [{id: 21, score: 0.5}, {id: 20, score: 0.5}],
-        B: [{id: 12, score: 1}],
-        C: [{id: 6, score: 1}],
-        D: [{id: 10, score: 0.5}, {id: 19, score: 0.5}]
+        A: [{id: 21, score: 0.5}, {id: 20, score: 0.5}, {dimension: 'E', score: 1}, {dimension: 'J', score: 0.5}],
+        B: [{id: 12, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'S2', score: 0.5}],
+        C: [{id: 6, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'N', score: 0.5}],
+        D: [{id: 10, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'A', score: 0.5}]
     },
     15: {
-        A: [{id: 1, score: 1}],
-        B: [{id: 2, score: 1}],
-        C: [{id: 9, score: 1}],
-        D: [{id: 24, score: 1}]
+        A: [{id: 1, score: 1}, {dimension: 'F', score: 1}, {dimension: 'S', score: 0.5}],
+        B: [{id: 2, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 0.5}],
+        C: [{id: 9, score: 1}, {dimension: 'N', score: 1}, {dimension: 'A', score: 0.5}],
+        D: [{id: 24, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'A', score: 1}]
     },
     16: {
-        A: [{id: 9, score: 1}],
-        B: [{id: 7, score: 1}],
-        C: [{id: 15, score: 1}],
-        D: [{id: 3, score: 1}]
+        A: [{id: 9, score: 1}, {dimension: 'N', score: 0.5}, {dimension: 'E', score: 0.5}],
+        B: [{id: 7, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'T', score: 0.5}],
+        C: [{id: 15, score: 1}, {dimension: 'E', score: 0.5}, {dimension: 'F', score: 0.5}],
+        D: [{id: 3, score: 1}, {dimension: 'T', score: 1}, {dimension: 'A', score: 0.5}]
     },
     17: {
-        A: [{id: 1, score: 0.5}, {id: 21, score: 0.5}],
-        B: [{id: 8, score: 0.5}, {id: 16, score: 0.5}],
-        C: [{id: 10, score: 1}],
-        D: [{id: 24, score: 1}]
+        A: [{id: 1, score: 0.5}, {id: 21, score: 0.5}, {dimension: 'E', score: 1}, {dimension: 'N', score: 0.5}],
+        B: [{id: 8, score: 0.5}, {id: 16, score: 0.5}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 0.5}],
+        C: [{id: 10, score: 1}, {dimension: 'I', score: 1}, {dimension: 'A', score: 0.5}],
+        D: [{id: 24, score: 1}, {dimension: 'I', score: 1}, {dimension: 'P', score: 1}]
     },
     18: {
-        A: [{id: 22, score: 1}],
-        B: [{id: 1, score: 1}],
-        C: [{id: 12, score: 1}],
-        D: [{id: 7, score: 0.5}, {id: 19, score: 0.5}]
+        A: [{id: 22, score: 1}, {dimension: 'F', score: 1}, {dimension: 'I', score: 0.5}],
+        B: [{id: 1, score: 1}, {dimension: 'E', score: 0.5}, {dimension: 'S', score: 0.5}],
+        C: [{id: 12, score: 1}, {dimension: 'J', score: 1}, {dimension: 'S2', score: 0.5}],
+        D: [{id: 7, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'P', score: 0.5}]
     },
     19: {
-        A: [{id: 9, score: 1}],
-        B: [{id: 12, score: 1}],
-        C: [{id: 2, score: 1}],
-        D: [{id: 7, score: 0.5}, {id: 19, score: 0.5}]
+        A: [{id: 9, score: 1}, {dimension: 'N', score: 0.5}, {dimension: 'E', score: 0.5}],
+        B: [{id: 12, score: 1}, {dimension: 'T', score: 1}, {dimension: 'J', score: 0.5}],
+        C: [{id: 2, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 0.5}],
+        D: [{id: 7, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'P', score: 1}]
     },
     20: {
-        A: [{id: 21, score: 0.5}, {id: 20, score: 0.5}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 6, score: 0.5}, {id: 23, score: 0.5}],
-        D: [{id: 23, score: 0.5}, {id: 14, score: 0.5}]
+        A: [{id: 21, score: 0.5}, {id: 20, score: 0.5}, {dimension: 'E', score: 1}, {dimension: 'A', score: 0.5}],
+        B: [{id: 8, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 0.5}],
+        C: [{id: 6, score: 0.5}, {id: 23, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'F', score: 0.5}],
+        D: [{id: 23, score: 0.5}, {id: 14, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'F', score: 1}]
     },
     21: {
-        A: [{id: 9, score: 1}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 24, score: 1}],
-        D: [{id: 10, score: 1}]
+        A: [{id: 9, score: 1}, {dimension: 'E', score: 0.5}, {dimension: 'N', score: 0.5}],
+        B: [{id: 8, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 0.5}],
+        C: [{id: 24, score: 1}, {dimension: 'I', score: 1}, {dimension: 'A', score: 0.5}],
+        D: [{id: 10, score: 1}, {dimension: 'I', score: 1}, {dimension: 'P', score: 1}]
     },
     22: {
-        A: [{id: 6, score: 0.5}, {id: 23, score: 0.5}],
-        B: [{id: 2, score: 1}],
-        C: [{id: 23, score: 1}],
-        D: [{id: 14, score: 1}]
+        A: [{id: 6, score: 0.5}, {id: 23, score: 0.5}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 1}],
+        B: [{id: 2, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 0.5}],
+        C: [{id: 23, score: 1}, {dimension: 'I', score: 1}, {dimension: 'F', score: 1}],
+        D: [{id: 14, score: 1}, {dimension: 'I', score: 1}, {dimension: 'S', score: 0.5}]
     },
     23: {
-        A: [{id: 1, score: 1}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 16, score: 1}],
-        D: [{id: 10, score: 1}]
+        A: [{id: 1, score: 1}, {dimension: 'E', score: 1}, {dimension: 'N', score: 0.5}],
+        B: [{id: 8, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 0.5}],
+        C: [{id: 16, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'J', score: 0.5}],
+        D: [{id: 10, score: 1}, {dimension: 'I', score: 1}, {dimension: 'A', score: 1}]
     },
     24: {
-        A: [{id: 1, score: 1}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 7, score: 1}],
-        D: [{id: 19, score: 1}]
+        A: [{id: 1, score: 1}, {dimension: 'S', score: 1}, {dimension: 'F', score: 0.5}],
+        B: [{id: 8, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'P', score: 0.5}],
+        C: [{id: 7, score: 1}, {dimension: 'I', score: 1}, {dimension: 'P', score: 1}],
+        D: [{id: 19, score: 1}, {dimension: 'I', score: 1}, {dimension: 'A', score: 0.5}]
     },
     25: {
-        A: [{id: 21, score: 1}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 6, score: 1}],
-        D: [{id: 23, score: 1}]
+        A: [{id: 21, score: 1}, {dimension: 'E', score: 1}, {dimension: 'A', score: 1}],
+        B: [{id: 8, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'S2', score: 0.5}],
+        C: [{id: 6, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 1}],
+        D: [{id: 23, score: 1}, {dimension: 'I', score: 1}, {dimension: 'F', score: 1}]
     },
     26: {
-        A: [{id: 1, score: 0.5}, {id: 8, score: 0.5}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 10, score: 1}],
-        D: [{id: 3, score: 1}]
+        A: [{id: 1, score: 0.5}, {id: 8, score: 0.5}, {dimension: 'S', score: 1}, {dimension: 'F', score: 0.5}],
+        B: [{id: 8, score: 1}, {dimension: 'S', score: 0.5}, {dimension: 'P', score: 0.5}],
+        C: [{id: 10, score: 1}, {dimension: 'A', score: 1}, {dimension: 'T', score: 0.5}],
+        D: [{id: 3, score: 1}, {dimension: 'T', score: 1}, {dimension: 'A', score: 1}]
     },
     27: {
-        A: [{id: 1, score: 1}],
-        B: [{id: 6, score: 1}],
-        C: [{id: 21, score: 1}],
-        D: [{id: 7, score: 0.5}, {id: 19, score: 0.5}]
+        A: [{id: 1, score: 1}, {dimension: 'E', score: 0.5}, {dimension: 'S', score: 0.5}],
+        B: [{id: 6, score: 1}, {dimension: 'N', score: 0.5}, {dimension: 'P', score: 0.5}],
+        C: [{id: 21, score: 1}, {dimension: 'E', score: 0.5}, {dimension: 'J', score: 1}],
+        D: [{id: 7, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'A', score: 0.5}]
     },
     28: {
-        A: [{id: 1, score: 0.5}, {id: 21, score: 0.5}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 7, score: 1}],
-        D: [{id: 14, score: 1}]
+        A: [{id: 1, score: 0.5}, {id: 21, score: 0.5}, {dimension: 'J', score: 1}, {dimension: 'S', score: 0.5}],
+        B: [{id: 8, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'P', score: 0.5}],
+        C: [{id: 7, score: 1}, {dimension: 'I', score: 1}, {dimension: 'P', score: 1}],
+        D: [{id: 14, score: 1}, {dimension: 'I', score: 1}, {dimension: 'P', score: 1}]
     },
     29: {
-        A: [{id: 1, score: 0.5}, {id: 8, score: 0.5}],
-        B: [{id: 10, score: 1}],
-        C: [{id: 6, score: 1}],
-        D: [{id: 6, score: 1}]
+        A: [{id: 1, score: 0.5}, {id: 8, score: 0.5}, {dimension: 'E', score: 0.5}, {dimension: 'S', score: 0.5}],
+        B: [{id: 10, score: 1}, {dimension: 'I', score: 1}, {dimension: 'A', score: 0.5}],
+        C: [{id: 6, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'P', score: 1}],
+        D: [{id: 6, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 1}]
     },
     30: {
-        A: [{id: 20, score: 1}],
-        B: [{id: 8, score: 1}],
-        C: [{id: 6, score: 0.5}, {id: 23, score: 0.5}],
-        D: [{id: 10, score: 0.5}, {id: 19, score: 0.5}]
+        A: [{id: 20, score: 1}, {dimension: 'E', score: 1}, {dimension: 'A', score: 1}],
+        B: [{id: 8, score: 1}, {dimension: 'I', score: 0.5}, {dimension: 'S2', score: 0.5}],
+        C: [{id: 6, score: 0.5}, {id: 23, score: 0.5}, {dimension: 'I', score: 0.5}, {dimension: 'F', score: 1}],
+        D: [{id: 10, score: 0.5}, {id: 19, score: 0.5}, {dimension: 'I', score: 1}, {dimension: 'A', score: 0.5}]
     }
 };
 
@@ -661,6 +661,7 @@ const scoringRules = {
 let currentQuestion = 0;
 let answers = [];
 let scores = {};
+let dimensions = {};
 
 // DOM 元素
 const sections = document.querySelectorAll('.section');
@@ -815,10 +816,19 @@ function showNextQuestion() {
 
 // 计算分数
 function calculateScores() {
-    // 初始化分数
+    // 初始化狗种分数
     for (let i = 1; i <= 24; i++) {
         scores[i] = 0;
     }
+    
+    // 初始化维度分数
+    dimensions = {
+        E: 0, I: 0,
+        T: 0, F: 0,
+        J: 0, P: 0,
+        A: 0, S: 0,
+        N: 0, S2: 0
+    };
 
     // 计算每个选项的分数
     answers.forEach((answer, index) => {
@@ -826,7 +836,11 @@ function calculateScores() {
         const rule = scoringRules[questionId];
         if (rule && rule[answer]) {
             rule[answer].forEach(item => {
-                scores[item.id] += item.score;
+                if (item.id) {
+                    scores[item.id] += item.score;
+                } else if (item.dimension) {
+                    dimensions[item.dimension] += item.score;
+                }
             });
         }
     });
@@ -847,9 +861,18 @@ function showResult() {
         }
     }
 
+    // 计算维度百分比
+    const dimensionPercentages = {
+        'E-I': { left: (dimensions.E / (dimensions.E + dimensions.I) * 100).toFixed(1), right: (dimensions.I / (dimensions.E + dimensions.I) * 100).toFixed(1) },
+        'T-F': { left: (dimensions.T / (dimensions.T + dimensions.F) * 100).toFixed(1), right: (dimensions.F / (dimensions.T + dimensions.F) * 100).toFixed(1) },
+        'J-P': { left: (dimensions.J / (dimensions.J + dimensions.P) * 100).toFixed(1), right: (dimensions.P / (dimensions.J + dimensions.P) * 100).toFixed(1) },
+        'A-S': { left: (dimensions.A / (dimensions.A + dimensions.S) * 100).toFixed(1), right: (dimensions.S / (dimensions.A + dimensions.S) * 100).toFixed(1) },
+        'N-S': { left: (dimensions.N / (dimensions.N + dimensions.S2) * 100).toFixed(1), right: (dimensions.S2 / (dimensions.N + dimensions.S2) * 100).toFixed(1) }
+    };
+
     // 保存历史记录
     const dog = dogTypes[maxDogId];
-    saveHistory(maxDogId, dog.name, answers);
+    saveHistory(maxDogId, dog.name, answers, dimensionPercentages);
 
     // 3秒后显示结果
     setTimeout(() => {
@@ -862,6 +885,87 @@ function showResult() {
         document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${dog.snark}`;
         document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${dog.advice}`;
         document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${dog.caption}`;
+
+        // 生成维度进度条
+        const dimensionsContainer = document.querySelector('.result-dimensions');
+        dimensionsContainer.innerHTML = `
+            <h3>五维对抗分析</h3>
+            <div class="dimension-item">
+                <div class="dimension-labels">
+                    <span>社交悍匪</span>
+                    <span>E-I</span>
+                    <span>孤独患者</span>
+                </div>
+                <div class="dimension-bar">
+                    <div class="dimension-progress left" style="width: ${dimensionPercentages['E-I'].left}%"></div>
+                    <div class="dimension-progress right" style="width: ${dimensionPercentages['E-I'].right}%"></div>
+                </div>
+                <div class="dimension-percentages">
+                    <span>${dimensionPercentages['E-I'].left}%</span>
+                    <span>${dimensionPercentages['E-I'].right}%</span>
+                </div>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-labels">
+                    <span>钢铁直狗</span>
+                    <span>T-F</span>
+                    <span>玻璃心狗</span>
+                </div>
+                <div class="dimension-bar">
+                    <div class="dimension-progress left" style="width: ${dimensionPercentages['T-F'].left}%"></div>
+                    <div class="dimension-progress right" style="width: ${dimensionPercentages['T-F'].right}%"></div>
+                </div>
+                <div class="dimension-percentages">
+                    <span>${dimensionPercentages['T-F'].left}%</span>
+                    <span>${dimensionPercentages['T-F'].right}%</span>
+                </div>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-labels">
+                    <span>计划通</span>
+                    <span>J-P</span>
+                    <span>摆烂王</span>
+                </div>
+                <div class="dimension-bar">
+                    <div class="dimension-progress left" style="width: ${dimensionPercentages['J-P'].left}%"></div>
+                    <div class="dimension-progress right" style="width: ${dimensionPercentages['J-P'].right}%"></div>
+                </div>
+                <div class="dimension-percentages">
+                    <span>${dimensionPercentages['J-P'].left}%</span>
+                    <span>${dimensionPercentages['J-P'].right}%</span>
+                </div>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-labels">
+                    <span>自信拽狗</span>
+                    <span>A-S</span>
+                    <span>卑微舔狗</span>
+                </div>
+                <div class="dimension-bar">
+                    <div class="dimension-progress left" style="width: ${dimensionPercentages['A-S'].left}%"></div>
+                    <div class="dimension-progress right" style="width: ${dimensionPercentages['A-S'].right}%"></div>
+                </div>
+                <div class="dimension-percentages">
+                    <span>${dimensionPercentages['A-S'].left}%</span>
+                    <span>${dimensionPercentages['A-S'].right}%</span>
+                </div>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-labels">
+                    <span>发疯艺术家</span>
+                    <span>N-S</span>
+                    <span>老实巴交</span>
+                </div>
+                <div class="dimension-bar">
+                    <div class="dimension-progress left" style="width: ${dimensionPercentages['N-S'].left}%"></div>
+                    <div class="dimension-progress right" style="width: ${dimensionPercentages['N-S'].right}%"></div>
+                </div>
+                <div class="dimension-percentages">
+                    <span>${dimensionPercentages['N-S'].left}%</span>
+                    <span>${dimensionPercentages['N-S'].right}%</span>
+                </div>
+            </div>
+        `;
 
         // 显示结果页
         showSection('result');
@@ -888,7 +992,7 @@ function hideLoadingAnimation() {
 }
 
 // 保存历史记录
-function saveHistory(dogId, dogName, userAnswers) {
+function saveHistory(dogId, dogName, userAnswers, dimensions) {
     const history = JSON.parse(localStorage.getItem('sgtHistory') || '[]');
     const record = {
         id: Date.now(),
@@ -896,7 +1000,8 @@ function saveHistory(dogId, dogName, userAnswers) {
         dogId: dogId,
         dogName: dogName,
         answers: userAnswers,
-        score: scores[dogId]
+        score: scores[dogId],
+        dimensions: dimensions
     };
     history.unshift(record);
     // 只保留最近10条记录
