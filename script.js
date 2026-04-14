@@ -1046,9 +1046,15 @@ function generateScreenshot() {
     });
 }
 
+// 检测是否在微信内置浏览器中
+function isWeChatBrowser() {
+    return /MicroMessenger/i.test(navigator.userAgent);
+}
+
 // 分享结果
 function shareResult() {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isWeChat = isWeChatBrowser();
 
     if (isMobile) {
         // 移动端：生成截图并分享
@@ -1057,9 +1063,11 @@ function shareResult() {
                 // 创建临时图片URL
                 const imageUrl = URL.createObjectURL(blob);
                 
-                // 检查是否支持Web Share API
-                if (navigator.share) {
-                    // Web Share API 支持分享文件
+                if (isWeChat) {
+                    // 微信内置浏览器：显示截图并提示长按保存
+                    showWeChatShare(imageUrl);
+                } else if (navigator.share) {
+                    // 支持Web Share API的浏览器
                     const files = [
                         new File([blob], 'sgt_result.png', { type: 'image/png' })
                     ];
@@ -1069,11 +1077,10 @@ function shareResult() {
                         files: files
                     }).catch(error => {
                         console.error('分享失败:', error);
-                        // 失败时保存图片
                         saveImage(imageUrl);
                     });
                 } else {
-                    // 不支持Web Share API时，保存图片
+                    // 其他移动端浏览器：保存图片
                     saveImage(imageUrl);
                 }
             }
@@ -1086,6 +1093,35 @@ function shareResult() {
         // 桌面端：使用文本分享
         shareTextResult();
     }
+}
+
+// 微信分享提示
+function showWeChatShare(imageUrl) {
+    // 创建分享提示容器
+    const shareContainer = document.createElement('div');
+    shareContainer.className = 'wechat-share-container';
+    shareContainer.innerHTML = `
+        <div class="wechat-share-content">
+            <h3>分享结果</h3>
+            <div class="wechat-share-image">
+                <img src="${imageUrl}" alt="测试结果">
+            </div>
+            <div class="wechat-share-tips">
+                <p>💡 <strong>微信分享提示</strong></p>
+                <p>1. 长按图片</p>
+                <p>2. 选择「保存图片」</p>
+                <p>3. 打开微信，发送给朋友或分享到朋友圈</p>
+            </div>
+            <button class="btn close-btn">关闭</button>
+        </div>
+    `;
+    document.body.appendChild(shareContainer);
+
+    // 绑定关闭按钮事件
+    shareContainer.querySelector('.close-btn').addEventListener('click', function() {
+        shareContainer.remove();
+        URL.revokeObjectURL(imageUrl);
+    });
 }
 
 // 分享文本结果
