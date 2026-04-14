@@ -679,11 +679,15 @@ const historyBtn = document.querySelector('.history-btn');
 const historyList = document.querySelector('.history-list');
 const historyEmpty = document.querySelector('.history-empty');
 const questionSelect = document.getElementById('question-select');
+const questionGrid = document.querySelector('.question-grid');
 
 // 初始化
 function init() {
     // 生成题号选择器
     generateQuestionSelector();
+    
+    // 生成题目进度格子
+    generateQuestionGrid();
     
     // 绑定事件
     bindEvents();
@@ -772,6 +776,8 @@ function resetTest() {
     });
     // 生成题号选择器
     generateQuestionSelector();
+    // 生成题目进度格子
+    generateQuestionGrid();
 }
 
 // 生成题号选择器
@@ -789,6 +795,38 @@ function generateQuestionSelector() {
         }
         selector.appendChild(option);
     }
+}
+
+// 生成题目进度格子
+function generateQuestionGrid() {
+    if (!questionGrid) return;
+    
+    questionGrid.innerHTML = '';
+    for (let i = 0; i < questions.length; i++) {
+        const gridItem = document.createElement('div');
+        gridItem.className = `question-grid-item ${answers[i] ? 'answered' : 'unanswered'} ${i === currentQuestion ? 'current' : ''}`;
+        gridItem.textContent = i + 1;
+        gridItem.dataset.index = i;
+        
+        // 添加点击事件
+        gridItem.addEventListener('click', function() {
+            const index = parseInt(this.dataset.index);
+            currentQuestion = index;
+            showQuestion();
+        });
+        
+        questionGrid.appendChild(gridItem);
+    }
+}
+
+// 更新题目进度格子
+function updateQuestionGrid() {
+    if (!questionGrid) return;
+    
+    const gridItems = questionGrid.querySelectorAll('.question-grid-item');
+    gridItems.forEach((item, index) => {
+        item.className = `question-grid-item ${answers[index] ? 'answered' : 'unanswered'} ${index === currentQuestion ? 'current' : ''}`;
+    });
 }
 
 // 显示当前问题
@@ -819,6 +857,9 @@ function showQuestion() {
     if (selector) {
         selector.value = currentQuestion;
     }
+    
+    // 更新题目进度格子
+    updateQuestionGrid();
 }
 
 // 选择选项
@@ -830,6 +871,8 @@ function selectOption(value) {
             option.classList.add('selected');
         }
     });
+    // 更新题目进度格子
+    updateQuestionGrid();
 }
 
 // 显示上一题
@@ -846,10 +889,28 @@ function showNextQuestion() {
         currentQuestion++;
         showQuestion();
     } else {
-        // 提交答案
+        // 检查是否所有题目都已完成
+        const unansweredCount = checkUnansweredQuestions();
+        if (unansweredCount > 0) {
+            alert(`您还有 ${unansweredCount} 题未完成，请继续完成所有题目！`);
+            return;
+        }
+        
+        // 所有题目已完成，提交答案
         calculateScores();
         showResult();
     }
+}
+
+// 检查未完成的题目数量
+function checkUnansweredQuestions() {
+    let unanswered = 0;
+    for (let i = 0; i < questions.length; i++) {
+        if (!answers[i]) {
+            unanswered++;
+        }
+    }
+    return unanswered;
 }
 
 // 计算分数
@@ -1334,76 +1395,33 @@ function generateScreenshot() {
 
 // 分享结果
 function shareResult() {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (isMobile) {
-        // 移动端：生成截图并分享
-        generateScreenshot().then(blob => {
-            if (blob) {
-                // 创建临时图片URL
-                const imageUrl = URL.createObjectURL(blob);
-                
-                // 检查是否支持Web Share API
-                if (navigator.share) {
-                    // Web Share API 支持分享文件
-                    const files = [
-                        new File([blob], 'sgt_result.png', { type: 'image/png' })
-                    ];
-                    navigator.share({
-                        title: 'SGTI 傻狗测试结果',
-                        text: document.querySelector('.result-caption').textContent,
-                        files: files
-                    }).catch(error => {
-                        console.error('分享失败:', error);
-                        // 失败时保存图片
-                        saveImage(imageUrl);
-                    });
-                } else {
-                    // 不支持Web Share API时，保存图片
-                    saveImage(imageUrl);
-                }
-            }
-        }).catch(error => {
-            console.error('截图失败:', error);
-            // 截图失败时使用文本分享
-            shareTextResult();
-        });
-    } else {
-        // 桌面端：使用文本分享
-        shareTextResult();
-    }
-}
-
-// 分享文本结果
-function shareTextResult() {
-    const resultTitle = document.querySelector('.result-title').textContent;
+    // 直接复制所有结果文字，适用于所有浏览器
+    const dogName = document.querySelector('.result-title').textContent;
+    const description = document.querySelector('.result-description').textContent;
+    const snark = document.querySelector('.result-snark').textContent;
+    const advice = document.querySelector('.result-advice').textContent;
     const caption = document.querySelector('.result-caption').textContent;
-    const text = `${resultTitle}\n${caption}`;
-
-    if (navigator.share) {
-        navigator.share({
-            title: 'SGTI 傻狗测试结果',
-            text: text,
-            url: window.location.href
+    
+    // 复制所有结果文字
+    const resultText = `${dogName}\n\n${description}\n\n${snark}\n\n${advice}\n\n${caption}`;
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(resultText).then(() => {
+            alert('结果已复制到剪贴板');
+        }).catch(error => {
+            console.error('复制失败:', error);
+            alert('复制失败，请手动复制');
         });
     } else {
-        // 复制到剪贴板
-        navigator.clipboard.writeText(text).then(() => {
-            alert('结果已复制到剪贴板');
-        });
+        // 回退方法
+        const textArea = document.createElement('textarea');
+        textArea.value = resultText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('结果已复制到剪贴板');
     }
-}
-
-// 保存图片
-function saveImage(imageUrl) {
-    const link = document.createElement('a');
-    link.href = imageUrl;
-    link.download = 'sgt_result.png';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(imageUrl);
-    alert('结果图片已保存，你可以在相册中找到并分享给朋友');
 }
 
 // 初始化
