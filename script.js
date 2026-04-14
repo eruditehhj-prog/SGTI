@@ -757,6 +757,29 @@ function resetTest() {
     options.forEach(option => {
         option.classList.remove('selected');
     });
+    // 生成题号选择器
+    generateQuestionSelector();
+}
+
+// 生成题号选择器
+function generateQuestionSelector() {
+    const selector = document.getElementById('question-select');
+    selector.innerHTML = '';
+    for (let i = 1; i <= questions.length; i++) {
+        const option = document.createElement('option');
+        option.value = i - 1;
+        option.textContent = `第 ${i} 题`;
+        if (i - 1 === currentQuestion) {
+            option.selected = true;
+        }
+        selector.appendChild(option);
+    }
+    
+    // 添加事件监听器
+    selector.addEventListener('change', function() {
+        currentQuestion = parseInt(this.value);
+        showQuestion();
+    });
 }
 
 // 显示当前问题
@@ -781,6 +804,12 @@ function showQuestion() {
     // 更新按钮状态
     prevBtn.disabled = currentQuestion === 0;
     nextBtn.textContent = currentQuestion === questions.length - 1 ? '提交' : '下一题';
+    
+    // 更新题号选择器
+    const selector = document.getElementById('question-select');
+    if (selector) {
+        selector.value = currentQuestion;
+    }
 }
 
 // 选择选项
