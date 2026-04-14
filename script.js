@@ -678,17 +678,30 @@ const shareBtn = document.querySelector('.share-btn');
 const historyBtn = document.querySelector('.history-btn');
 const historyList = document.querySelector('.history-list');
 const historyEmpty = document.querySelector('.history-empty');
+const questionSelect = document.getElementById('question-select');
 
 // 初始化
 function init() {
+    // 生成题号选择器
+    generateQuestionSelector();
+    
     // 绑定事件
     bindEvents();
+    
     // 加载历史记录
     loadHistory();
 }
 
 // 绑定事件
 function bindEvents() {
+    // 题号选择器事件
+    if (questionSelect) {
+        questionSelect.addEventListener('change', function() {
+            currentQuestion = parseInt(this.value);
+            showQuestion();
+        });
+    }
+
     // 导航链接
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -764,6 +777,8 @@ function resetTest() {
 // 生成题号选择器
 function generateQuestionSelector() {
     const selector = document.getElementById('question-select');
+    if (!selector) return;
+    
     selector.innerHTML = '';
     for (let i = 1; i <= questions.length; i++) {
         const option = document.createElement('option');
@@ -774,12 +789,6 @@ function generateQuestionSelector() {
         }
         selector.appendChild(option);
     }
-    
-    // 添加事件监听器
-    selector.addEventListener('change', function() {
-        currentQuestion = parseInt(this.value);
-        showQuestion();
-    });
 }
 
 // 显示当前问题
@@ -1089,6 +1098,92 @@ function showHistoryDetail(recordId) {
         document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${dog.snark}`;
         document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${dog.advice}`;
         document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${dog.caption}`;
+        
+        // 显示五维对抗分析
+        const dimensionsContainer = document.querySelector('.result-dimensions');
+        if (record.dimensions) {
+            dimensionsContainer.innerHTML = `
+                <h3>五维对抗分析</h3>
+                <div class="dimension-item">
+                    <div class="dimension-labels">
+                        <span>社交悍匪</span>
+                        <span>E-I</span>
+                        <span>孤独患者</span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-progress left" style="width: ${record.dimensions['E-I'].left}%"></div>
+                        <div class="dimension-progress right" style="width: ${record.dimensions['E-I'].right}%"></div>
+                    </div>
+                    <div class="dimension-percentages">
+                        <span>${record.dimensions['E-I'].left}%</span>
+                        <span>${record.dimensions['E-I'].right}%</span>
+                    </div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-labels">
+                        <span>钢铁直狗</span>
+                        <span>T-F</span>
+                        <span>玻璃心狗</span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-progress left" style="width: ${record.dimensions['T-F'].left}%"></div>
+                        <div class="dimension-progress right" style="width: ${record.dimensions['T-F'].right}%"></div>
+                    </div>
+                    <div class="dimension-percentages">
+                        <span>${record.dimensions['T-F'].left}%</span>
+                        <span>${record.dimensions['T-F'].right}%</span>
+                    </div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-labels">
+                        <span>计划通</span>
+                        <span>J-P</span>
+                        <span>摆烂王</span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-progress left" style="width: ${record.dimensions['J-P'].left}%"></div>
+                        <div class="dimension-progress right" style="width: ${record.dimensions['J-P'].right}%"></div>
+                    </div>
+                    <div class="dimension-percentages">
+                        <span>${record.dimensions['J-P'].left}%</span>
+                        <span>${record.dimensions['J-P'].right}%</span>
+                    </div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-labels">
+                        <span>自信拽狗</span>
+                        <span>A-S</span>
+                        <span>卑微舔狗</span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-progress left" style="width: ${record.dimensions['A-S'].left}%"></div>
+                        <div class="dimension-progress right" style="width: ${record.dimensions['A-S'].right}%"></div>
+                    </div>
+                    <div class="dimension-percentages">
+                        <span>${record.dimensions['A-S'].left}%</span>
+                        <span>${record.dimensions['A-S'].right}%</span>
+                    </div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-labels">
+                        <span>发疯艺术家</span>
+                        <span>N-S</span>
+                        <span>老实巴交</span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-progress left" style="width: ${record.dimensions['N-S'].left}%"></div>
+                        <div class="dimension-progress right" style="width: ${record.dimensions['N-S'].right}%"></div>
+                    </div>
+                    <div class="dimension-percentages">
+                        <span>${record.dimensions['N-S'].left}%</span>
+                        <span>${record.dimensions['N-S'].right}%</span>
+                    </div>
+                </div>
+            `;
+        } else {
+            dimensionsContainer.innerHTML = '<h3>五维对抗分析</h3><p>暂无维度数据</p>';
+        }
+        
         showSection('result');
     }
 }
