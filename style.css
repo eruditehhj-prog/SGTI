@@ -147,6 +147,28 @@ body {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* 关于作者 */
+.about-author {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.about-author h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #ff6b6b;
+}
+
+.about-author p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #666;
+}
+
 /* 测试页样式 */
 .test-container {
     max-width: 800px;
@@ -366,8 +388,10 @@ body {
 /* 响应式设计 */
 @media (max-width: 768px) {
     .nav-links {
-        flex-direction: column;
+        flex-direction: row;
         gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
     
     .hero h2 {
@@ -400,6 +424,10 @@ body {
     
     .loading-text {
         font-size: 16px;
+    }
+    
+    .dog-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     }
 }
 
