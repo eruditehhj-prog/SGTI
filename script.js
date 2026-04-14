@@ -834,6 +834,9 @@ function calculateScores() {
 
 // 显示结果
 function showResult() {
+    // 显示等待动画
+    showLoadingAnimation();
+
     // 找到分数最高的狗种
     let maxScore = 0;
     let maxDogId = 1;
@@ -844,19 +847,44 @@ function showResult() {
         }
     }
 
-    // 更新结果页
-    const dog = dogTypes[maxDogId];
-    document.querySelector('.result-title').textContent = `你是${dog.name}`;
-    document.querySelector('.result-description').textContent = dog.description;
-    document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${dog.snark}`;
-    document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${dog.advice}`;
-    document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${dog.caption}`;
-
     // 保存历史记录
+    const dog = dogTypes[maxDogId];
     saveHistory(maxDogId, dog.name, answers);
 
-    // 显示结果页
-    showSection('result');
+    // 3秒后显示结果
+    setTimeout(() => {
+        // 隐藏等待动画
+        hideLoadingAnimation();
+
+        // 更新结果页
+        document.querySelector('.result-title').textContent = `你是${dog.name}`;
+        document.querySelector('.result-description').textContent = dog.description;
+        document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${dog.snark}`;
+        document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${dog.advice}`;
+        document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${dog.caption}`;
+
+        // 显示结果页
+        showSection('result');
+    }, 3000);
+}
+
+// 显示等待动画
+function showLoadingAnimation() {
+    const loadingContainer = document.createElement('div');
+    loadingContainer.className = 'loading-container';
+    loadingContainer.innerHTML = `
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在分析你的社交状态...</div>
+    `;
+    document.body.appendChild(loadingContainer);
+}
+
+// 隐藏等待动画
+function hideLoadingAnimation() {
+    const loadingContainer = document.querySelector('.loading-container');
+    if (loadingContainer) {
+        loadingContainer.remove();
+    }
 }
 
 // 保存历史记录
@@ -931,8 +959,137 @@ function showHistoryDetail(recordId) {
     }
 }
 
+// 生成结果截图
+function generateScreenshot() {
+    return new Promise((resolve, reject) => {
+        const resultContainer = document.querySelector('.result-container');
+        if (!resultContainer) {
+            reject('结果容器不存在');
+            return;
+        }
+
+        // 创建canvas元素
+        const canvas = document.createElement('canvas');
+        const rect = resultContainer.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        const ctx = canvas.getContext('2d');
+
+        // 模拟结果容器的样式
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 创建一个临时的div来模拟结果内容
+        const tempDiv = document.createElement('div');
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.left = '-9999px';
+        tempDiv.style.width = `${rect.width}px`;
+        tempDiv.style.backgroundColor = '#ffffff';
+        tempDiv.style.borderRadius = '20px';
+        tempDiv.style.padding = '40px';
+        tempDiv.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.1)';
+        tempDiv.innerHTML = resultContainer.innerHTML;
+        document.body.appendChild(tempDiv);
+
+        // 使用html2canvas库生成截图
+        if (typeof html2canvas !== 'undefined') {
+            html2canvas(tempDiv, {
+                scale: 2,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                document.body.removeChild(tempDiv);
+                canvas.toBlob(blob => {
+                    resolve(blob);
+                }, 'image/png');
+            }).catch(error => {
+                document.body.removeChild(tempDiv);
+                reject(error);
+            });
+        } else {
+            // 简单的Canvas绘制作为fallback
+            ctx.font = '24px "Comic Sans MS", "Arial", sans-serif';
+            ctx.fillStyle = '#ff6b6b';
+            ctx.textAlign = 'center';
+            ctx.fillText(document.querySelector('.result-title').textContent, canvas.width / 2, 60);
+
+            ctx.font = '16px "Comic Sans MS", "Arial", sans-serif';
+            ctx.fillStyle = '#333333';
+            ctx.textAlign = 'left';
+            const description = document.querySelector('.result-description').textContent;
+            const lines = [];
+            let currentLine = '';
+            const words = description.split(' ');
+            for (const word of words) {
+                if (ctx.measureText(currentLine + word + ' ').width < canvas.width - 80) {
+                    currentLine += word + ' ';
+                } else {
+                    lines.push(currentLine);
+                    currentLine = word + ' ';
+                }
+            }
+            if (currentLine) {
+                lines.push(currentLine);
+            }
+
+            let y = 120;
+            lines.forEach(line => {
+                ctx.fillText(line, 40, y);
+                y += 24;
+            });
+
+            document.body.removeChild(tempDiv);
+            canvas.toBlob(blob => {
+                resolve(blob);
+            }, 'image/png');
+        }
+    });
+}
+
 // 分享结果
 function shareResult() {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // 移动端：生成截图并分享
+        generateScreenshot().then(blob => {
+            if (blob) {
+                // 创建临时图片URL
+                const imageUrl = URL.createObjectURL(blob);
+                
+                // 检查是否支持Web Share API
+                if (navigator.share) {
+                    // Web Share API 支持分享文件
+                    const files = [
+                        new File([blob], 'sgt_result.png', { type: 'image/png' })
+                    ];
+                    navigator.share({
+                        title: 'SGTI 傻狗测试结果',
+                        text: document.querySelector('.result-caption').textContent,
+                        files: files
+                    }).catch(error => {
+                        console.error('分享失败:', error);
+                        // 失败时保存图片
+                        saveImage(imageUrl);
+                    });
+                } else {
+                    // 不支持Web Share API时，保存图片
+                    saveImage(imageUrl);
+                }
+            }
+        }).catch(error => {
+            console.error('截图失败:', error);
+            // 截图失败时使用文本分享
+            shareTextResult();
+        });
+    } else {
+        // 桌面端：使用文本分享
+        shareTextResult();
+    }
+}
+
+// 分享文本结果
+function shareTextResult() {
     const resultTitle = document.querySelector('.result-title').textContent;
     const caption = document.querySelector('.result-caption').textContent;
     const text = `${resultTitle}\n${caption}`;
@@ -949,6 +1106,18 @@ function shareResult() {
             alert('结果已复制到剪贴板');
         });
     }
+}
+
+// 保存图片
+function saveImage(imageUrl) {
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = 'sgt_result.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(imageUrl);
+    alert('结果图片已保存，你可以在相册中找到并分享给朋友');
 }
 
 // 初始化
