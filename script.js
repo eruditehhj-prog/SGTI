@@ -663,6 +663,34 @@ let answers = [];
 let scores = {};
 let dimensions = {};
 
+// 每种狗在题库中的总出现次数（用于计算命中率）
+const dogTypeTotalCounts = {
+    1: 14,   // 舔狗
+    2: 8,    // 潜水狗
+    3: 6,    // 杠狗
+    4: 4,    // 冷场狗
+    5: 4,    // 酒狗
+    6: 12,   // 吗喽狗
+    7: 10,   // 死狗
+    8: 14,   // 哈巴狗
+    9: 9,    // 疯狗
+    10: 12,  // 独狗
+    11: 4,   // 舔而不得狗
+    12: 5,   // 电子狗
+    13: 4,   // 土狗
+    14: 8,   // 流浪狗
+    15: 5,   // 跟屁狗
+    16: 6,   // 看门狗
+    17: 4,   // 烧烤狗
+    18: 4,   // 落水狗
+    19: 9,   // 失踪狗
+    20: 9,   // 二哈
+    21: 10,  // 牧羊犬
+    22: 4,   // 警犬
+    23: 8,   // 病狗
+    24: 6    // 神狗
+};
+
 // DOM 元素
 const sections = document.querySelectorAll('.section');
 const navLinks = document.querySelectorAll('.nav-link');
@@ -915,7 +943,7 @@ function checkUnansweredQuestions() {
 
 // 计算分数
 function calculateScores() {
-    // 初始化狗种分数
+    // 初始化狗种分数（记录实际命中次数）
     for (let i = 1; i <= 24; i++) {
         scores[i] = 0;
     }
@@ -945,33 +973,68 @@ function calculateScores() {
     });
 }
 
+// 计算每种狗的命中率
+function calculateHitRates() {
+    const hitRates = {};
+    for (let i = 1; i <= 24; i++) {
+        const totalCount = dogTypeTotalCounts[i];
+        const actualCount = scores[i];
+        // 命中率 = 实际出现次数 ÷ 总出现次数 × 100%
+        hitRates[i] = totalCount > 0 ? (actualCount / totalCount * 100) : 0;
+    }
+    return hitRates;
+}
+
+// 排序并获取结果
+function getResultFromHitRates(hitRates) {
+    // 将对象转换为数组并排序
+    const sortedDogs = Object.entries(hitRates)
+        .map(([id, rate]) => ({ id: parseInt(id), rate }))
+        .sort((a, b) => b.rate - a.rate);
+    
+    // 获取前三名
+    const top3 = sortedDogs.slice(0, 3);
+    
+    // 判断是否为混合型
+    let resultType = 'single';
+    let resultDogs = [top3[0]];
+    
+    if (top3.length >= 2) {
+        const diff = Math.abs(top3[0].rate - top3[1].rate);
+        // 如果第一名和第二名差距小于5%，认为是混合型
+        if (diff < 5) {
+            resultType = 'mixed';
+            resultDogs = [top3[0], top3[1]];
+            
+            // 检查是否有第三名也接近
+            if (top3.length >= 3) {
+                const diff2 = Math.abs(top3[1].rate - top3[2].rate);
+                if (diff2 < 5) {
+                    resultType = 'triple';
+                    resultDogs = [top3[0], top3[1], top3[2]];
+                }
+            }
+        }
+    }
+    
+    return {
+        type: resultType,
+        dogs: resultDogs,
+        top3: top3
+    };
+}
+
 // 显示结果
 function showResult() {
     // 显示等待动画
     showLoadingAnimation();
 
-    // 找到分数最高的狗种
-    let maxScore = 0;
-    let maxDogId = 1;
-    for (let id in scores) {
-        if (scores[id] > maxScore) {
-            maxScore = scores[id];
-            maxDogId = parseInt(id);
-        }
-    }
-
-    // 计算维度百分比
-    const dimensionPercentages = {
-        'E-I': { left: (dimensions.E / (dimensions.E + dimensions.I) * 100).toFixed(1), right: (dimensions.I / (dimensions.E + dimensions.I) * 100).toFixed(1) },
-        'T-F': { left: (dimensions.T / (dimensions.T + dimensions.F) * 100).toFixed(1), right: (dimensions.F / (dimensions.T + dimensions.F) * 100).toFixed(1) },
-        'J-P': { left: (dimensions.J / (dimensions.J + dimensions.P) * 100).toFixed(1), right: (dimensions.P / (dimensions.J + dimensions.P) * 100).toFixed(1) },
-        'A-S': { left: (dimensions.A / (dimensions.A + dimensions.S) * 100).toFixed(1), right: (dimensions.S / (dimensions.A + dimensions.S) * 100).toFixed(1) },
-        'N-S': { left: (dimensions.N / (dimensions.N + dimensions.S2) * 100).toFixed(1), right: (dimensions.S2 / (dimensions.N + dimensions.S2) * 100).toFixed(1) }
-    };
-
+    // 计算命中率
+    const hitRates = calculateHitRates();
+    const result = getResultFromHitRates(hitRates);
+    
     // 保存历史记录
-    const dog = dogTypes[maxDogId];
-    saveHistory(maxDogId, dog.name, answers, dimensionPercentages);
+    saveHistory(result, hitRates, answers);
 
     // 3秒后显示结果
     setTimeout(() => {
@@ -979,124 +1042,211 @@ function showResult() {
         hideLoadingAnimation();
 
         // 更新结果页
-        document.querySelector('.result-title').textContent = `你是${dog.name}`;
-        document.querySelector('.result-description').textContent = dog.description;
-        document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${dog.snark}`;
-        document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${dog.advice}`;
-        document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${dog.caption}`;
-
-        // 生成维度进度条
-        const dimensionsContainer = document.querySelector('.result-dimensions');
-        dimensionsContainer.innerHTML = `
-            <h3>五维对抗分析</h3>
-            <div class="dimension-item">
-                <div class="dimension-labels">
-                    <span>社交悍匪</span>
-                    <span>E-I</span>
-                    <span>孤独患者</span>
-                </div>
-                <div class="dimension-bar">
-                    <div class="dimension-progress left" style="width: ${dimensionPercentages['E-I'].left}%"></div>
-                    <div class="dimension-progress right" style="width: ${dimensionPercentages['E-I'].right}%"></div>
-                </div>
-                <div class="dimension-percentages">
-                    <span>${dimensionPercentages['E-I'].left}%</span>
-                    <span>${dimensionPercentages['E-I'].right}%</span>
-                </div>
-            </div>
-            <div class="dimension-item">
-                <div class="dimension-labels">
-                    <span>钢铁直狗</span>
-                    <span>T-F</span>
-                    <span>玻璃心狗</span>
-                </div>
-                <div class="dimension-bar">
-                    <div class="dimension-progress left" style="width: ${dimensionPercentages['T-F'].left}%"></div>
-                    <div class="dimension-progress right" style="width: ${dimensionPercentages['T-F'].right}%"></div>
-                </div>
-                <div class="dimension-percentages">
-                    <span>${dimensionPercentages['T-F'].left}%</span>
-                    <span>${dimensionPercentages['T-F'].right}%</span>
-                </div>
-            </div>
-            <div class="dimension-item">
-                <div class="dimension-labels">
-                    <span>计划通</span>
-                    <span>J-P</span>
-                    <span>摆烂王</span>
-                </div>
-                <div class="dimension-bar">
-                    <div class="dimension-progress left" style="width: ${dimensionPercentages['J-P'].left}%"></div>
-                    <div class="dimension-progress right" style="width: ${dimensionPercentages['J-P'].right}%"></div>
-                </div>
-                <div class="dimension-percentages">
-                    <span>${dimensionPercentages['J-P'].left}%</span>
-                    <span>${dimensionPercentages['J-P'].right}%</span>
-                </div>
-            </div>
-            <div class="dimension-item">
-                <div class="dimension-labels">
-                    <span>自信拽狗</span>
-                    <span>A-S</span>
-                    <span>卑微舔狗</span>
-                </div>
-                <div class="dimension-bar">
-                    <div class="dimension-progress left" style="width: ${dimensionPercentages['A-S'].left}%"></div>
-                    <div class="dimension-progress right" style="width: ${dimensionPercentages['A-S'].right}%"></div>
-                </div>
-                <div class="dimension-percentages">
-                    <span>${dimensionPercentages['A-S'].left}%</span>
-                    <span>${dimensionPercentages['A-S'].right}%</span>
-                </div>
-            </div>
-            <div class="dimension-item">
-                <div class="dimension-labels">
-                    <span>发疯艺术家</span>
-                    <span>N-S</span>
-                    <span>老实巴交</span>
-                </div>
-                <div class="dimension-bar">
-                    <div class="dimension-progress left" style="width: ${dimensionPercentages['N-S'].left}%"></div>
-                    <div class="dimension-progress right" style="width: ${dimensionPercentages['N-S'].right}%"></div>
-                </div>
-                <div class="dimension-percentages">
-                    <span>${dimensionPercentages['N-S'].left}%</span>
-                    <span>${dimensionPercentages['N-S'].right}%</span>
-                </div>
-            </div>
-        `;
-
-        // 生成二维码
-        const qrcodeContainer = document.getElementById('qrcode-container');
-        if (qrcodeContainer && typeof QRCode !== 'undefined') {
-            qrcodeContainer.innerHTML = '';
-            const url = window.location.origin + window.location.pathname;
-            
-            // 创建canvas元素
-            const canvas = document.createElement('canvas');
-            QRCode.toCanvas(canvas, url, {
-                width: 150,
-                margin: 1,
-                color: {
-                    dark: '#000000',
-                    light: '#ffffff'
-                }
-            }, function (error) {
-                if (error) {
-                    console.error('二维码生成错误:', error);
-                    // 如果生成失败，显示错误信息
-                    qrcodeContainer.innerHTML = '<p style="color: red;">二维码生成失败</p>';
-                } else {
-                    // 成功生成，添加到容器
-                    qrcodeContainer.appendChild(canvas);
-                }
-            });
-        } else if (qrcodeContainer) {
-            qrcodeContainer.innerHTML = '<p style="color: red;">二维码库未加载</p>';
-        }
+        updateResultDisplay(result, hitRates);
 
         showSection('result');
     }, 3000);
+}
+
+// 更新结果页面显示
+function updateResultDisplay(result, hitRates) {
+    const resultTitle = document.querySelector('.result-title');
+    const resultDescription = document.querySelector('.result-description');
+    const resultSnark = document.querySelector('.result-snark');
+    const resultAdvice = document.querySelector('.result-advice');
+    const resultCaption = document.querySelector('.result-caption');
+    
+    if (result.type === 'single') {
+        // 单一结果
+        const dog = dogTypes[result.dogs[0].id];
+        resultTitle.textContent = `你是${dog.name}`;
+        resultDescription.textContent = dog.description;
+        resultSnark.innerHTML = `💀 <strong>毒舌一句</strong>：${dog.snark}`;
+        resultAdvice.innerHTML = `⚠️ <strong>忠告</strong>：${dog.advice}`;
+        resultCaption.innerHTML = `📱 <strong>晒图配文</strong>：${dog.caption}`;
+    } else if (result.type === 'mixed') {
+        // 混合型
+        const dog1 = dogTypes[result.dogs[0].id];
+        const dog2 = dogTypes[result.dogs[1].id];
+        resultTitle.textContent = `你是${dog1.name}+${dog2.name}混合体`;
+        resultDescription.textContent = `${dog1.description}\n\n同时，你也具有${dog2.name}的特质：${dog2.description}`;
+        resultSnark.innerHTML = `💀 <strong>毒舌一句</strong>：${dog1.snark}，而且${dog2.snark}`;
+        resultAdvice.innerHTML = `⚠️ <strong>忠告</strong>：${dog1.advice} 另外，${dog2.advice}`;
+        resultCaption.innerHTML = `📱 <strong>晒图配文</strong>：测出来是${dog1.name}+${dog2.name}，谁懂啊！`;
+    } else if (result.type === 'triple') {
+        // 三合一（彩蛋）
+        const dog1 = dogTypes[result.dogs[0].id];
+        const dog2 = dogTypes[result.dogs[1].id];
+        const dog3 = dogTypes[result.dogs[2].id];
+        resultTitle.textContent = `你是${dog1.name}+${dog2.name}+${dog3.name}三合一`;
+        resultDescription.textContent = `罕见的三合一组合！你同时具备${dog1.name}、${dog2.name}和${dog3.name}的特质。\n\n${dog1.description}`;
+        resultSnark.innerHTML = `💀 <strong>毒舌一句</strong>：你是社交界的奇葩，三重人格在线切换`;
+        resultAdvice.innerHTML = `⚠️ <strong>忠告</strong>：建议你找个心理医生聊聊（开玩笑的）`;
+        resultCaption.innerHTML = `📱 <strong>晒图配文</strong>：测出来是三合一，我是谁？我在哪？`;
+    }
+    
+    // 生成五维对抗分析
+    generateDimensionBars();
+    
+    // 生成前三名进度条
+    generateTop3Bars(result.top3);
+    
+    // 生成二维码
+    generateQRCode();
+}
+
+// 生成五维对抗分析
+function generateDimensionBars() {
+    const dimensionsContainer = document.querySelector('.result-dimensions');
+    
+    // 计算维度百分比（防止除零）
+    const calcPercent = (a, b) => {
+        const total = a + b;
+        return total > 0 ? (a / total * 100).toFixed(1) : '50.0';
+    };
+    
+    const dimensionPercentages = {
+        'E-I': { left: calcPercent(dimensions.E, dimensions.I), right: calcPercent(dimensions.I, dimensions.E) },
+        'T-F': { left: calcPercent(dimensions.T, dimensions.F), right: calcPercent(dimensions.F, dimensions.T) },
+        'J-P': { left: calcPercent(dimensions.J, dimensions.P), right: calcPercent(dimensions.P, dimensions.J) },
+        'A-S': { left: calcPercent(dimensions.A, dimensions.S), right: calcPercent(dimensions.S, dimensions.A) },
+        'N-S': { left: calcPercent(dimensions.N, dimensions.S2), right: calcPercent(dimensions.S2, dimensions.N) }
+    };
+    
+    dimensionsContainer.innerHTML = `
+        <h3>五维对抗分析</h3>
+        <div class="dimension-item">
+            <div class="dimension-labels">
+                <span>社交悍匪</span>
+                <span>E-I</span>
+                <span>孤独患者</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-progress left" style="width: ${dimensionPercentages['E-I'].left}%"></div>
+                <div class="dimension-progress right" style="width: ${dimensionPercentages['E-I'].right}%"></div>
+            </div>
+            <div class="dimension-percentages">
+                <span>${dimensionPercentages['E-I'].left}%</span>
+                <span>${dimensionPercentages['E-I'].right}%</span>
+            </div>
+        </div>
+        <div class="dimension-item">
+            <div class="dimension-labels">
+                <span>钢铁直狗</span>
+                <span>T-F</span>
+                <span>玻璃心狗</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-progress left" style="width: ${dimensionPercentages['T-F'].left}%"></div>
+                <div class="dimension-progress right" style="width: ${dimensionPercentages['T-F'].right}%"></div>
+            </div>
+            <div class="dimension-percentages">
+                <span>${dimensionPercentages['T-F'].left}%</span>
+                <span>${dimensionPercentages['T-F'].right}%</span>
+            </div>
+        </div>
+        <div class="dimension-item">
+            <div class="dimension-labels">
+                <span>计划通</span>
+                <span>J-P</span>
+                <span>摆烂王</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-progress left" style="width: ${dimensionPercentages['J-P'].left}%"></div>
+                <div class="dimension-progress right" style="width: ${dimensionPercentages['J-P'].right}%"></div>
+            </div>
+            <div class="dimension-percentages">
+                <span>${dimensionPercentages['J-P'].left}%</span>
+                <span>${dimensionPercentages['J-P'].right}%</span>
+            </div>
+        </div>
+        <div class="dimension-item">
+            <div class="dimension-labels">
+                <span>自信拽狗</span>
+                <span>A-S</span>
+                <span>卑微舔狗</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-progress left" style="width: ${dimensionPercentages['A-S'].left}%"></div>
+                <div class="dimension-progress right" style="width: ${dimensionPercentages['A-S'].right}%"></div>
+            </div>
+            <div class="dimension-percentages">
+                <span>${dimensionPercentages['A-S'].left}%</span>
+                <span>${dimensionPercentages['A-S'].right}%</span>
+            </div>
+        </div>
+        <div class="dimension-item">
+            <div class="dimension-labels">
+                <span>发疯艺术家</span>
+                <span>N-S</span>
+                <span>老实巴交</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-progress left" style="width: ${dimensionPercentages['N-S'].left}%"></div>
+                <div class="dimension-progress right" style="width: ${dimensionPercentages['N-S'].right}%"></div>
+            </div>
+            <div class="dimension-percentages">
+                <span>${dimensionPercentages['N-S'].left}%</span>
+                <span>${dimensionPercentages['N-S'].right}%</span>
+            </div>
+        </div>
+    `;
+}
+
+// 生成前三名进度条
+function generateTop3Bars(top3) {
+    const dimensionsContainer = document.querySelector('.result-dimensions');
+    const top3Html = `
+        <h3 style="margin-top: 30px;">🏆 狗种命中率排行榜</h3>
+        ${top3.map((item, index) => {
+            const dog = dogTypes[item.id];
+            const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+            return `
+                <div class="dimension-item">
+                    <div class="dimension-labels">
+                        <span>${medal} ${dog.name}</span>
+                        <span>命中率</span>
+                        <span>${item.rate.toFixed(1)}%</span>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-progress left" style="width: ${item.rate}%"></div>
+                    </div>
+                </div>
+            `;
+        }).join('')}
+    `;
+    dimensionsContainer.innerHTML += top3Html;
+}
+
+// 生成二维码
+function generateQRCode() {
+    const qrcodeContainer = document.getElementById('qrcode-container');
+    if (qrcodeContainer && typeof QRCode !== 'undefined') {
+        qrcodeContainer.innerHTML = '';
+        const url = window.location.origin + window.location.pathname;
+        
+        // 创建canvas元素
+        const canvas = document.createElement('canvas');
+        QRCode.toCanvas(canvas, url, {
+            width: 150,
+            margin: 1,
+            color: {
+                dark: '#000000',
+                light: '#ffffff'
+            }
+        }, function (error) {
+            if (error) {
+                console.error('二维码生成错误:', error);
+                // 如果生成失败，显示错误信息
+                qrcodeContainer.innerHTML = '<p style="color: red;">二维码生成失败</p>';
+            } else {
+                // 成功生成，添加到容器
+                qrcodeContainer.appendChild(canvas);
+            }
+        });
+    } else if (qrcodeContainer) {
+        qrcodeContainer.innerHTML = '<p style="color: red;">二维码库未加载</p>';
+    }
 }
 
 // 显示等待动画
@@ -1119,16 +1269,48 @@ function hideLoadingAnimation() {
 }
 
 // 保存历史记录
-function saveHistory(dogId, dogName, userAnswers, dimensions) {
+function saveHistory(result, hitRates, userAnswers) {
     const history = JSON.parse(localStorage.getItem('sgtHistory') || '[]');
+    
+    // 构建结果文本
+    let resultText = '';
+    if (result.type === 'single') {
+        const dog = dogTypes[result.dogs[0].id];
+        resultText = dog.name;
+    } else if (result.type === 'mixed') {
+        const dog1 = dogTypes[result.dogs[0].id];
+        const dog2 = dogTypes[result.dogs[1].id];
+        resultText = `${dog1.name}+${dog2.name}`;
+    } else if (result.type === 'triple') {
+        const dog1 = dogTypes[result.dogs[0].id];
+        const dog2 = dogTypes[result.dogs[1].id];
+        const dog3 = dogTypes[result.dogs[2].id];
+        resultText = `${dog1.name}+${dog2.name}+${dog3.name}`;
+    }
+    
+    // 计算维度百分比
+    const calcPercent = (a, b) => {
+        const total = a + b;
+        return total > 0 ? (a / total * 100).toFixed(1) : '50.0';
+    };
+    
+    const dimensionPercentages = {
+        'E-I': { left: calcPercent(dimensions.E, dimensions.I), right: calcPercent(dimensions.I, dimensions.E) },
+        'T-F': { left: calcPercent(dimensions.T, dimensions.F), right: calcPercent(dimensions.F, dimensions.T) },
+        'J-P': { left: calcPercent(dimensions.J, dimensions.P), right: calcPercent(dimensions.P, dimensions.J) },
+        'A-S': { left: calcPercent(dimensions.A, dimensions.S), right: calcPercent(dimensions.S, dimensions.A) },
+        'N-S': { left: calcPercent(dimensions.N, dimensions.S2), right: calcPercent(dimensions.S2, dimensions.N) }
+    };
+    
     const record = {
         id: Date.now(),
         date: new Date().toLocaleString(),
-        dogId: dogId,
-        dogName: dogName,
+        resultType: result.type,
+        dogs: result.dogs.map(d => ({ id: d.id, name: dogTypes[d.id].name, rate: d.rate })),
+        top3: result.top3.map(d => ({ id: d.id, name: dogTypes[d.id].name, rate: d.rate })),
         answers: userAnswers,
-        score: scores[dogId],
-        dimensions: dimensions
+        hitRates: hitRates,
+        dimensions: dimensionPercentages
     };
     history.unshift(record);
     // 只保留最近10条记录
@@ -1149,14 +1331,22 @@ function loadHistory() {
         history.forEach(record => {
             const historyItem = document.createElement('div');
             historyItem.className = 'history-item';
+            
+            // 构建结果文本
+            let resultText = '';
+            record.dogs.forEach((dog, index) => {
+                if (index > 0) resultText += '+';
+                resultText += dog.name;
+            });
+            
             historyItem.innerHTML = `
                 <div class="history-item-header">
-                    <div class="history-item-title">${record.dogName}</div>
+                    <div class="history-item-title">${resultText}</div>
                     <div class="history-item-date">${record.date}</div>
                 </div>
                 <div class="history-item-content">
                     测试时间：${record.date}<br>
-                    得分：${record.score.toFixed(1)}
+                    最高命中率：${record.top3[0].rate.toFixed(1)}%
                     <button class="btn detail-btn" data-id="${record.id}">查看详情</button>
                 </div>
             `;
@@ -1181,12 +1371,26 @@ function showHistoryDetail(recordId) {
     const history = JSON.parse(localStorage.getItem('sgtHistory') || '[]');
     const record = history.find(item => item.id === recordId);
     if (record) {
-        const dog = dogTypes[record.dogId];
-        document.querySelector('.result-title').textContent = `你是${dog.name}`;
-        document.querySelector('.result-description').textContent = dog.description;
-        document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${dog.snark}`;
-        document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${dog.advice}`;
-        document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${dog.caption}`;
+        // 构建结果文本
+        let resultText = '';
+        record.dogs.forEach((dog, index) => {
+            if (index > 0) resultText += '+';
+            resultText += dog.name;
+        });
+        
+        document.querySelector('.result-title').textContent = `你是${resultText}`;
+        
+        // 显示主要狗种的描述
+        const mainDog = dogTypes[record.dogs[0].id];
+        let description = mainDog.description;
+        if (record.dogs.length > 1) {
+            const secondDog = dogTypes[record.dogs[1].id];
+            description += `\n\n同时，你也具有${secondDog.name}的特质：${secondDog.description}`;
+        }
+        document.querySelector('.result-description').textContent = description;
+        document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${mainDog.snark}`;
+        document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${mainDog.advice}`;
+        document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${mainDog.caption}`;
         
         // 显示五维对抗分析
         const dimensionsContainer = document.querySelector('.result-dimensions');
@@ -1269,38 +1473,33 @@ function showHistoryDetail(recordId) {
                     </div>
                 </div>
             `;
+            
+            // 添加前三名进度条
+            const top3Html = `
+                <h3 style="margin-top: 30px;">🏆 狗种命中率排行榜</h3>
+                ${record.top3.map((item, index) => {
+                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+                    return `
+                        <div class="dimension-item">
+                            <div class="dimension-labels">
+                                <span>${medal} ${item.name}</span>
+                                <span>命中率</span>
+                                <span>${item.rate.toFixed(1)}%</span>
+                            </div>
+                            <div class="dimension-bar">
+                                <div class="dimension-progress left" style="width: ${item.rate}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+            dimensionsContainer.innerHTML += top3Html;
         } else {
             dimensionsContainer.innerHTML = '<h3>五维对抗分析</h3><p>暂无维度数据</p>';
         }
         
         // 生成二维码
-        const qrcodeContainer = document.getElementById('qrcode-container');
-        if (qrcodeContainer && typeof QRCode !== 'undefined') {
-            qrcodeContainer.innerHTML = '';
-            const url = window.location.origin + window.location.pathname;
-            
-            // 创建canvas元素
-            const canvas = document.createElement('canvas');
-            QRCode.toCanvas(canvas, url, {
-                width: 150,
-                margin: 1,
-                color: {
-                    dark: '#000000',
-                    light: '#ffffff'
-                }
-            }, function (error) {
-                if (error) {
-                    console.error('二维码生成错误:', error);
-                    // 如果生成失败，显示错误信息
-                    qrcodeContainer.innerHTML = '<p style="color: red;">二维码生成失败</p>';
-                } else {
-                    // 成功生成，添加到容器
-                    qrcodeContainer.appendChild(canvas);
-                }
-            });
-        } else if (qrcodeContainer) {
-            qrcodeContainer.innerHTML = '<p style="color: red;">二维码库未加载</p>';
-        }
+        generateQRCode();
         
         showSection('result');
     }
