@@ -1332,12 +1332,28 @@ function loadHistory() {
             const historyItem = document.createElement('div');
             historyItem.className = 'history-item';
             
-            // 构建结果文本
+            // 构建结果文本（兼容新旧数据结构）
             let resultText = '';
-            record.dogs.forEach((dog, index) => {
-                if (index > 0) resultText += '+';
-                resultText += dog.name;
-            });
+            if (record.dogs && record.dogs.length > 0) {
+                // 新数据结构
+                record.dogs.forEach((dog, index) => {
+                    if (index > 0) resultText += '+';
+                    resultText += dog.name;
+                });
+            } else if (record.dogName) {
+                // 旧数据结构兼容
+                resultText = record.dogName;
+            } else {
+                resultText = '未知结果';
+            }
+            
+            // 获取最高命中率（兼容新旧数据结构）
+            let hitRateText = '';
+            if (record.top3 && record.top3.length > 0) {
+                hitRateText = `最高命中率：${record.top3[0].rate.toFixed(1)}%`;
+            } else if (record.score !== undefined) {
+                hitRateText = `得分：${record.score.toFixed(1)}`;
+            }
             
             historyItem.innerHTML = `
                 <div class="history-item-header">
@@ -1346,7 +1362,7 @@ function loadHistory() {
                 </div>
                 <div class="history-item-content">
                     测试时间：${record.date}<br>
-                    最高命中率：${record.top3[0].rate.toFixed(1)}%
+                    ${hitRateText}
                     <button class="btn detail-btn" data-id="${record.id}">查看详情</button>
                 </div>
             `;
@@ -1371,26 +1387,44 @@ function showHistoryDetail(recordId) {
     const history = JSON.parse(localStorage.getItem('sgtHistory') || '[]');
     const record = history.find(item => item.id === recordId);
     if (record) {
-        // 构建结果文本
+        // 构建结果文本（兼容新旧数据结构）
         let resultText = '';
-        record.dogs.forEach((dog, index) => {
-            if (index > 0) resultText += '+';
-            resultText += dog.name;
-        });
+        if (record.dogs && record.dogs.length > 0) {
+            // 新数据结构
+            record.dogs.forEach((dog, index) => {
+                if (index > 0) resultText += '+';
+                resultText += dog.name;
+            });
+        } else if (record.dogName) {
+            // 旧数据结构兼容
+            resultText = record.dogName;
+        } else {
+            resultText = '未知结果';
+        }
         
         document.querySelector('.result-title').textContent = `你是${resultText}`;
         
-        // 显示主要狗种的描述
-        const mainDog = dogTypes[record.dogs[0].id];
-        let description = mainDog.description;
-        if (record.dogs.length > 1) {
-            const secondDog = dogTypes[record.dogs[1].id];
-            description += `\n\n同时，你也具有${secondDog.name}的特质：${secondDog.description}`;
+        // 显示主要狗种的描述（兼容新旧数据结构）
+        if (record.dogs && record.dogs.length > 0) {
+            // 新数据结构
+            const mainDog = dogTypes[record.dogs[0].id];
+            let description = mainDog.description;
+            if (record.dogs.length > 1) {
+                const secondDog = dogTypes[record.dogs[1].id];
+                description += `\n\n同时，你也具有${secondDog.name}的特质：${secondDog.description}`;
+            }
+            document.querySelector('.result-description').textContent = description;
+            document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${mainDog.snark}`;
+            document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${mainDog.advice}`;
+            document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${mainDog.caption}`;
+        } else if (record.dogId) {
+            // 旧数据结构兼容
+            const dog = dogTypes[record.dogId];
+            document.querySelector('.result-description').textContent = dog.description;
+            document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${dog.snark}`;
+            document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${dog.advice}`;
+            document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${dog.caption}`;
         }
-        document.querySelector('.result-description').textContent = description;
-        document.querySelector('.result-snark').innerHTML = `💀 <strong>毒舌一句</strong>：${mainDog.snark}`;
-        document.querySelector('.result-advice').innerHTML = `⚠️ <strong>忠告</strong>：${mainDog.advice}`;
-        document.querySelector('.result-caption').innerHTML = `📱 <strong>晒图配文</strong>：${mainDog.caption}`;
         
         // 显示五维对抗分析
         const dimensionsContainer = document.querySelector('.result-dimensions');
@@ -1474,26 +1508,28 @@ function showHistoryDetail(recordId) {
                 </div>
             `;
             
-            // 添加前三名进度条
-            const top3Html = `
-                <h3 style="margin-top: 30px;">🏆 狗种命中率排行榜</h3>
-                ${record.top3.map((item, index) => {
-                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
-                    return `
-                        <div class="dimension-item">
-                            <div class="dimension-labels">
-                                <span>${medal} ${item.name}</span>
-                                <span>命中率</span>
-                                <span>${item.rate.toFixed(1)}%</span>
+            // 添加前三名进度条（仅新数据结构）
+            if (record.top3 && record.top3.length > 0) {
+                const top3Html = `
+                    <h3 style="margin-top: 30px;">🏆 狗种命中率排行榜</h3>
+                    ${record.top3.map((item, index) => {
+                        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+                        return `
+                            <div class="dimension-item">
+                                <div class="dimension-labels">
+                                    <span>${medal} ${item.name}</span>
+                                    <span>命中率</span>
+                                    <span>${item.rate.toFixed(1)}%</span>
+                                </div>
+                                <div class="dimension-bar">
+                                    <div class="dimension-progress left" style="width: ${item.rate}%"></div>
+                                </div>
                             </div>
-                            <div class="dimension-bar">
-                                <div class="dimension-progress left" style="width: ${item.rate}%"></div>
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-            `;
-            dimensionsContainer.innerHTML += top3Html;
+                        `;
+                    }).join('')}
+                `;
+                dimensionsContainer.innerHTML += top3Html;
+            }
         } else {
             dimensionsContainer.innerHTML = '<h3>五维对抗分析</h3><p>暂无维度数据</p>';
         }
@@ -1502,6 +1538,8 @@ function showHistoryDetail(recordId) {
         generateQRCode();
         
         showSection('result');
+    } else {
+        alert('未找到该历史记录');
     }
 }
 
