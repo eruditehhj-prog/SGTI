@@ -1543,16 +1543,36 @@ function showHistoryDetail(recordId) {
     }
 }
 
+// 显示指定部分
+function showSection(sectionId) {
+    sections.forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById(sectionId).classList.add('active');
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${sectionId}`) {
+            link.classList.add('active');
+        }
+    });
+    
+    // 如果切换到数据统计页,初始化图表
+    if (sectionId === 'statistics') {
+        setTimeout(() => {
+            initStatisticsCharts();
+        }, 100);
+    }
+}
+
 // 分享结果
 function shareResult() {
-    // 直接复制所有结果文字，适用于所有浏览器
     const dogName = document.querySelector('.result-title').textContent;
     const description = document.querySelector('.result-description').textContent;
     const snark = document.querySelector('.result-snark').textContent;
     const advice = document.querySelector('.result-advice').textContent;
     const caption = document.querySelector('.result-caption').textContent;
     
-    // 复制所有结果文字
     const resultText = `${dogName}\n\n${description}\n\n${snark}\n\n${advice}\n\n${caption}`;
     
     if (navigator.clipboard) {
@@ -1563,7 +1583,6 @@ function shareResult() {
             alert('复制失败，请手动复制');
         });
     } else {
-        // 回退方法
         const textArea = document.createElement('textarea');
         textArea.value = resultText;
         document.body.appendChild(textArea);
@@ -1572,6 +1591,308 @@ function shareResult() {
         document.body.removeChild(textArea);
         alert('结果已复制到剪贴板');
     }
+}
+
+// 初始化数据统计图表
+function initStatisticsCharts() {
+    // 生成模拟数据
+    const mockData = generateMockData();
+    
+    // 初始化饼图
+    initPieChart(mockData.pieData);
+    
+    // 初始化地图
+    initMapChart(mockData.mapData);
+    
+    // 初始化折线图
+    initLineChart(mockData.lineData);
+}
+
+// 生成模拟数据
+function generateMockData() {
+    // 饼图数据 - 各狗种分布
+    const pieData = [
+        { name: '舔狗', value: 150 },
+        { name: '潜水狗', value: 120 },
+        { name: '杠狗', value: 80 },
+        { name: '冷场狗', value: 60 },
+        { name: '酒狗', value: 90 },
+        { name: '吗喽狗', value: 200 },
+        { name: '死狗', value: 110 },
+        { name: '哈巴狗', value: 70 },
+        { name: '疯狗', value: 85 },
+        { name: '独狗', value: 95 },
+        { name: '舔而不得狗', value: 65 },
+        { name: '电子狗', value: 75 },
+        { name: '土狗', value: 45 },
+        { name: '流浪狗', value: 55 },
+        { name: '跟屁狗', value: 40 },
+        { name: '看门狗', value: 50 },
+        { name: '烧烤狗', value: 35 },
+        { name: '落水狗', value: 30 },
+        { name: '失踪狗', value: 100 },
+        { name: '二哈', value: 88 },
+        { name: '牧羊犬', value: 42 },
+        { name: '警犬', value: 38 },
+        { name: '病狗', value: 92 },
+        { name: '神狗', value: 25 }
+    ];
+    
+    // 地图数据 - 各省份测试人数（使用完整名称匹配GeoJSON）
+    const mapData = [
+        { name: '北京市', value: 180 },
+        { name: '上海市', value: 165 },
+        { name: '广东省', value: 220 },
+        { name: '浙江省', value: 145 },
+        { name: '江苏省', value: 155 },
+        { name: '四川省', value: 130 },
+        { name: '湖北省', value: 95 },
+        { name: '湖南省', value: 88 },
+        { name: '河南省', value: 110 },
+        { name: '山东省', value: 125 },
+        { name: '福建省', value: 78 },
+        { name: '安徽省', value: 85 },
+        { name: '河北省', value: 92 },
+        { name: '陕西省', value: 68 },
+        { name: '辽宁省', value: 72 },
+        { name: '重庆市', value: 95 },
+        { name: '云南省', value: 55 },
+        { name: '广西壮族自治区', value: 62 },
+        { name: '江西省', value: 58 },
+        { name: '山西省', value: 48 },
+        { name: '内蒙古自治区', value: 42 },
+        { name: '黑龙江省', value: 56 },
+        { name: '吉林省', value: 38 },
+        { name: '贵州省', value: 45 },
+        { name: '海南省', value: 30 },
+        { name: '甘肃省', value: 35 },
+        { name: '宁夏回族自治区', value: 20 },
+        { name: '青海省', value: 15 },
+        { name: '西藏自治区', value: 12 },
+        { name: '新疆维吾尔自治区', value: 28 }
+    ];
+    
+    // 折线图数据 - 最近7天的测试趋势
+    const lineData = [];
+    const today = new Date();
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        const dateStr = `${date.getMonth() + 1}/${date.getDate()}`;
+        
+        lineData.push({
+            date: dateStr,
+            '舔狗': Math.floor(Math.random() * 30) + 15,
+            '吗喽狗': Math.floor(Math.random() * 35) + 20,
+            '潜水狗': Math.floor(Math.random() * 25) + 12,
+            '死狗': Math.floor(Math.random() * 20) + 10,
+            '失踪狗': Math.floor(Math.random() * 18) + 8
+        });
+    }
+    
+    return { pieData, mapData, lineData };
+}
+
+// 初始化饼图
+function initPieChart(data) {
+    const chartDom = document.getElementById('pie-chart');
+    if (!chartDom) return;
+    
+    const myChart = echarts.init(chartDom);
+    
+    const option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            top: 'middle',
+            type: 'scroll'
+        },
+        series: [
+            {
+                name: '狗种分布',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                center: ['60%', '50%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: 20,
+                        fontWeight: 'bold'
+                    }
+                },
+                labelLine: {
+                    show: false
+                },
+                data: data.sort((a, b) => b.value - a.value)
+            }
+        ],
+        color: [
+            '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7',
+            '#a29bfe', '#fd79a8', '#00cec9', '#e17055', '#74b9ff',
+            '#55efc4', '#ffeaa7', '#fab1a0', '#81ecec', '#dfe6e9',
+            '#ff7675', '#fdcb6e', '#e84393', '#00b894', '#0984e3',
+            '#636e72', '#b2bec3', '#2d3436', '#d63031'
+        ]
+    };
+    
+    myChart.setOption(option);
+    
+    // 响应式调整
+    window.addEventListener('resize', function() {
+        myChart.resize();
+    });
+}
+
+// 初始化地图
+function initMapChart(data) {
+    const chartDom = document.getElementById('map-chart');
+    if (!chartDom) return;
+    
+    const myChart = echarts.init(chartDom);
+    
+    // 注册中国地图
+    fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+        .then(response => response.json())
+        .then(geoJson => {
+            echarts.registerMap('china', geoJson);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        if (params.value) {
+                            return `${params.name}<br/>测试人数: ${params.value}`;
+                        }
+                        return `${params.name}<br/>暂无数据`;
+                    }
+                },
+                visualMap: {
+                    min: 0,
+                    max: 250,
+                    left: 'left',
+                    top: 'bottom',
+                    text: ['多', '少'],
+                    calculable: true,
+                    inRange: {
+                        color: ['#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027']
+                    }
+                },
+                series: [
+                    {
+                        name: '测试人数',
+                        type: 'map',
+                        map: 'china',
+                        roam: true,
+                        zoom: 1.2,
+                        label: {
+                            show: true,
+                            fontSize: 10
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: 12,
+                                fontWeight: 'bold'
+                            },
+                            itemStyle: {
+                                areaColor: '#ffd700'
+                            }
+                        },
+                        data: data
+                    }
+                ]
+            };
+            
+            myChart.setOption(option);
+        })
+        .catch(error => {
+            console.error('地图加载失败:', error);
+            chartDom.innerHTML = '<p style="text-align: center; color: #999; padding: 100px;">地图数据加载失败，请检查网络连接</p>';
+        });
+    
+    // 响应式调整
+    window.addEventListener('resize', function() {
+        myChart.resize();
+    });
+}
+
+// 初始化折线图
+function initLineChart(data) {
+    const chartDom = document.getElementById('line-chart');
+    if (!chartDom) return;
+    
+    const myChart = echarts.init(chartDom);
+    
+    const dates = data.map(item => item.date);
+    const dogTypes = ['舔狗', '吗喽狗', '潜水狗', '死狗', '失踪狗'];
+    
+    const series = dogTypes.map(dogType => {
+        return {
+            name: dogType,
+            type: 'line',
+            smooth: true,
+            data: data.map(item => item[dogType]),
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: {
+                width: 3
+            }
+        };
+    });
+    
+    const option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            }
+        },
+        legend: {
+            data: dogTypes,
+            top: 10
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: dates,
+            axisLabel: {
+                rotate: 45
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '测试人数'
+        },
+        series: series,
+        color: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7']
+    };
+    
+    myChart.setOption(option);
+    
+    // 响应式调整
+    window.addEventListener('resize', function() {
+        myChart.resize();
+    });
 }
 
 // 初始化

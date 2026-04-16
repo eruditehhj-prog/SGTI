@@ -539,6 +539,33 @@ body {
     color: #666;
 }
 
+/* 数据统计页样式 */
+.statistics-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.chart-section {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+.chart-section h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ff6b6b;
+    text-align: center;
+}
+
+#pie-chart, #map-chart, #line-chart {
+    width: 100%;
+    min-height: 400px;
+}
+
 /* 等待动画 */
 .loading-container {
     position: fixed;

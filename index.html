@@ -16,6 +16,7 @@
                 <li><a href="#home" class="nav-link active">首页</a></li>
                 <li><a href="#test" class="nav-link">开始测试</a></li>
                 <li><a href="#history" class="nav-link">历史记录</a></li>
+                <li><a href="#statistics" class="nav-link">数据统计</a></li>
             </ul>
         </div>
     </nav>
@@ -139,12 +140,35 @@
                     <button class="btn start-btn">开始测试</button>
                 </div>
                 <div class="history-list">
-                    <!-- 历史记录项将通过JavaScript动态添加 -->
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- 数据统计页 -->
+    <section id="statistics" class="section">
+        <div class="container">
+            <h2>📊 数据统计分析</h2>
+            <div class="statistics-container">
+                <div class="chart-section">
+                    <h3>🥧 人群分布饼图</h3>
+                    <div id="pie-chart" style="width: 100%; height: 500px;"></div>
+                </div>
+                
+                <div class="chart-section">
+                    <h3>🗺️ 地域热力图</h3>
+                    <div id="map-chart" style="width: 100%; height: 600px;"></div>
+                </div>
+                
+                <div class="chart-section">
+                    <h3>📈 趋势折线图</h3>
+                    <div id="line-chart" style="width: 100%; height: 500px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <script src="script.js"></script>
