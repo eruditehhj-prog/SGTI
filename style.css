@@ -552,6 +552,8 @@ body {
     border-radius: 20px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     margin-bottom: 40px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .chart-section h3 {
@@ -563,6 +565,7 @@ body {
 
 #pie-chart, #map-chart, #line-chart {
     width: 100%;
+    min-width: 600px;
     min-height: 400px;
 }
 
@@ -652,6 +655,20 @@ body {
     
     .dog-grid {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+    
+    .chart-section {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .chart-section h3 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .statistics-container {
+        padding: 10px;
     }
 }
 

@@ -1764,9 +1764,14 @@ function initMapChart(data) {
     
     const myChart = echarts.init(chartDom);
     
-    // 注册中国地图
-    fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
-        .then(response => response.json())
+    // 使用本地地图数据，避免跨域问题
+    fetch('./data/china-map.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('地图文件加载失败');
+            }
+            return response.json();
+        })
         .then(geoJson => {
             echarts.registerMap('china', geoJson);
             
@@ -1821,7 +1826,13 @@ function initMapChart(data) {
         })
         .catch(error => {
             console.error('地图加载失败:', error);
-            chartDom.innerHTML = '<p style="text-align: center; color: #999; padding: 100px;">地图数据加载失败，请检查网络连接</p>';
+            chartDom.innerHTML = `
+                <div style="text-align: center; padding: 50px 20px;">
+                    <p style="color: #999; margin-bottom: 20px;">⚠️ 地图数据加载失败</p>
+                    <p style="color: #666; font-size: 14px;">请确保 data/china-map.json 文件存在</p>
+                    <p style="color: #666; font-size: 14px; margin-top: 10px;">错误信息: ${error.message}</p>
+                </div>
+            `;
         });
     
     // 响应式调整
