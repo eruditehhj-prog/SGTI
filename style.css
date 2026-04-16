@@ -616,9 +616,19 @@ body {
 @media (max-width: 768px) {
     .nav-links {
         flex-direction: row;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: center;
+        gap: 5px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 5px 0;
+    }
+    
+    .nav-link {
+        font-size: 14px;
+        padding: 6px 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
     
     .hero h2 {
